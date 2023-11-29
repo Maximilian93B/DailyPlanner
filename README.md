@@ -37,7 +37,9 @@ MDB.dev
 
 
 
-## Acknowledgments
+## EXtras 
+
+***HINT use localStorage.clear() in the console to clear 
 
 
 
