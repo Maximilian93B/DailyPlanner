@@ -1,53 +1,59 @@
 $(function () {
+    // Display current day
     var currentDay = dayjs().format("dddd, MMMM D, YYYY");
-        $("#currentDay").text(currentDay);
-
+    $("#currentDay").text(currentDay);
+  
     var workDayHours = Array.from({ length: 9 }, (_, index) => index + 9);
-
+  
+    // Generating time blocks
     var timeBlockContainer = $(".container-lg");
-        workDayHours.forEach(hour => {
-        var timeBlock = $("<div>").addClass("row time-block").attr ("id", "hour-" + hour);
-        timeBlock.append(
-            $("<div>").addClass("col-2 col-md-1 hour text-center py-3").text(hour + "AM"),
-            $("<textarea>").addClass("col-8 col-md-10 description").attr("rows", "3"),
-            $("<button>").addClass("btn saveBtn col-2 col-md-1").attr("aria-label", "save").html('<i class="fas fa-save" aria-hidden="true"></i>')
-        );
-
-            var currentHour = dayjs().hour();
-            if(hour < currentHour) {
-                timeBlock.addClass("past");
-            } else if (hour === currentHour) {
-                timeBlock.addClass("present")
-            } else {
-                timeBlock.addClass("future");
-            }
-            // add evetn listener to Blocks to enter events 
-            timeBlock.find(".description").on("click", function() {
-                console.log ("clicked on Hour" + hour);
-            });
-            
-            // event listen for save button for events
-            timeBlock.find(".saveBtn").on("click", function(){
-                var eventText = timeBlock.find(".description").val();
-                var storageKey = "event-" +hour;
-
-                localStorage.setItem(storageKey, eventText);
-                console.log ("Event at " + hour);
-            });
-
-           
-                var storedEvent = localStorage.getItem("event-" + hour); 
-                if(storedEvent){
-                    timeBlock.find(".description").val(storedEvent);
-                }
-        
-
-
-            timeBlockContainer.append(timeBlock);
+    workDayHours.forEach((hour, index) => {
+      var timeBlock = $("<div>").addClass("row time-block").attr("id", "hour-" + hour);
+      timeBlock.append(
+        $("<div>").addClass("col-2 col-md-1 hour text-center py-3").text(dayjs().hour(hour).format("hA")),
+        $("<textarea>").addClass("col-8 col-md-10 description").attr("rows", "3"),
+        $("<button>").addClass("btn saveBtn col-2 col-md-1").attr("aria-label", "save").html('<i class="fas fa-save" aria-hidden="true"></i>')
+      );
+  
+      // Make all future event blocks green
+      timeBlock.addClass("future");
+  
+      // Compare current hour and block hour ==> update class
+      var currentHour = dayjs().hour();
+  
+      if (index < 0) {
+        var fixedText = "This text cannot be changed";
+        timeBlock.find(".description").val(fixedText).prop("disabled", true);
+      } else {
+        // Compare current hour with time block hour and update class if needed
+        if (hour < currentHour) {
+          timeBlock.addClass("past");
+        } else if (hour === currentHour) {
+          timeBlock.addClass("present");
+        } else {
+          timeBlock.addClass("future");
+        }
+  
+        // Event listener for save button for events
+        timeBlock.find(".saveBtn").on("click", function () {
+          var eventText = timeBlock.find(".description").val();
+          var storageKey = "event-" + hour;
+  
+          localStorage.setItem(storageKey, eventText);
+          console.log("Event saved at " + hour);
+        });
+  
+        // Retrieve saved events and populate in time blocks
+        var storedEvent = localStorage.getItem("event-" + hour);
+        if (storedEvent) {
+          timeBlock.find(".description").val(storedEvent);
+        }
+      }
+  
+      timeBlockContainer.append(timeBlock);
     });
-   
-});
-   
+  });
+  
    // TODO: Add a listener for click events on the save button. This code should
    // use the id in the containing time-block as a key to save the user input in
    // local storage. HINT: What does `this` reference in the click listener
@@ -67,4 +73,3 @@ $(function () {
    //
    // TODO: Add code to display the current date in the header of the page.
 
- 
