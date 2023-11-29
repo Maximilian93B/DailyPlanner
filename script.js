@@ -1,6 +1,6 @@
 $(function () {
-    var currentDay = dayjs().format ("dddd, MMMM D, YYYY");
-    $("#currentDay").text(currentDay);
+    var currentDay = dayjs().format("dddd, MMMM D, YYYY");
+        $("#currentDay").text(currentDay);
 
     var workDayHours = Array.from({ length: 9 }, (_, index) => index + 9);
 
@@ -21,11 +21,32 @@ $(function () {
             } else {
                 timeBlock.addClass("future");
             }
+            // add evetn listener to Blocks to enter events 
+            timeBlock.find(".description").on("click", function() {
+                console.log ("clicked on Hour" + hour);
+            });
+            
+            // event listen for save button for events
+            timeBlock.find(".saveBtn").on("click", function(){
+                var eventText = timeBlock.find(".description").val();
+                var storageKey = "event-" +hour;
 
-        timeBlockContainer.append(timeBlock);
+                localStorage.setItem(storageKey, eventText);
+                console.log ("Event at " + hour);
+            });
+
+           
+                var storedEvent = localStorage.getItem("event-" + hour); 
+                if(storedEvent){
+                    timeBlock.find(".description").val(storedEvent);
+                }
+        
+
+
+            timeBlockContainer.append(timeBlock);
     });
    
-   
+});
    
    // TODO: Add a listener for click events on the save button. This code should
    // use the id in the containing time-block as a key to save the user input in
@@ -45,5 +66,5 @@ $(function () {
    // attribute of each time-block be used to do this?
    //
    // TODO: Add code to display the current date in the header of the page.
- });
+
  
