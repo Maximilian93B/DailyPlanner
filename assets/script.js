@@ -51,6 +51,6 @@ $(function () {
   });
 });
 
-
+// -----> jQuery not my favorite -_______-  <---------
  
  
